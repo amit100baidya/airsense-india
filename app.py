@@ -45,7 +45,27 @@ html, body, .stApp {
     font-family: 'DM Sans', sans-serif !important;
 }
 
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer { visibility: hidden; }
+header { visibility: hidden; }
+
+/* Always show the sidebar collapse/expand toggle arrow */
+[data-testid="collapsedControl"] {
+    visibility: visible !important;
+    display: flex !important;
+    background: #162019 !important;
+    border: 1px solid #1e3025 !important;
+    border-radius: 0 10px 10px 0 !important;
+    color: #3ddc84 !important;
+    top: 1rem !important;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.4) !important;
+}
+[data-testid="collapsedControl"]:hover {
+    background: #1e4d2b !important;
+    border-color: #3ddc84 !important;
+}
+[data-testid="collapsedControl"] svg {
+    fill: #3ddc84 !important;
+}
 .block-container { padding: 1.5rem 2rem 3rem 2rem !important; max-width: 1400px; }
 
 [data-testid="stSidebar"] {
