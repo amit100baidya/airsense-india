@@ -46,33 +46,20 @@ html, body, .stApp {
 }
 
 #MainMenu, footer { visibility: hidden; }
-header { visibility: hidden; }
 
-/* Always show sidebar toggle - cloud compatible */
-[data-testid="collapsedControl"],
-button[kind="header"] {
-    visibility: visible !important;
-    display: flex !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
+/* Keep header visible so sidebar toggle always works */
+header { visibility: visible !important; background: transparent !important; }
+header [data-testid="stToolbar"] { visibility: hidden; }
+
+/* Style the sidebar toggle button */
+[data-testid="collapsedControl"] {
     background: #162019 !important;
     border: 1px solid #2d5c3a !important;
-    border-radius: 0 10px 10px 0 !important;
+    border-radius: 0 12px 12px 0 !important;
     box-shadow: 2px 0 12px rgba(0,0,0,0.5) !important;
-    z-index: 999999 !important;
 }
-[data-testid="collapsedControl"] svg path,
 [data-testid="collapsedControl"] svg {
     fill: #3ddc84 !important;
-    stroke: #3ddc84 !important;
-}
-[data-testid="collapsedControl"]:hover {
-    background: #1e4d2b !important;
-    border-color: #3ddc84 !important;
-}
-section[data-testid="stSidebarCollapsedControl"] {
-    visibility: visible !important;
-    display: block !important;
 }
 .block-container { padding: 1.5rem 2rem 3rem 2rem !important; max-width: 1400px; }
 
