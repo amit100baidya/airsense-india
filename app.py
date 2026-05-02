@@ -18,7 +18,7 @@ st.set_page_config(
     page_title="AirSense India",
     page_icon="🌿",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 # ─────────────────────────────────────────
@@ -51,8 +51,8 @@ html, body, .stApp {
 header { visibility: hidden !important; }
 header [data-testid="stToolbar"] { visibility: hidden !important; }
 
-/* Hide default collapsed control - we replace with JS button */
-[data-testid="collapsedControl"] { visibility: hidden !important; }
+/* Sidebar toggle hidden - using top navbar instead */
+[data-testid="collapsedControl"] { display: none !important; }
 .block-container { padding: 1.5rem 2rem 3rem 2rem !important; max-width: 1400px; }
 
 [data-testid="stSidebar"] {
@@ -172,19 +172,27 @@ header [data-testid="stToolbar"] { visibility: hidden !important; }
 [data-testid="stMetricValue"] { color: var(--accent) !important; font-family: 'Segoe UI', system-ui, sans-serif !important; }
 
 div.stButton > button {
-    background: linear-gradient(135deg, #1e4d2b, #2d7a45) !important;
-    color: var(--accent) !important;
-    border: 1px solid var(--accent) !important;
-    border-radius: 10px !important;
-    font-family: 'Segoe UI', system-ui, sans-serif !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.05em !important;
-    padding: 0.6rem 1.5rem !important;
+    background: #162019 !important;
+    color: #7a9e88 !important;
+    border: 1px solid #1e3025 !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    font-size: 0.82rem !important;
+    padding: 0.4rem 0.6rem !important;
     transition: all 0.2s !important;
+    white-space: nowrap !important;
 }
 div.stButton > button:hover {
-    background: linear-gradient(135deg, #2d7a45, #3ddc84) !important;
-    color: #0a0f0d !important;
+    background: #1e4d2b !important;
+    color: #3ddc84 !important;
+    border-color: #3ddc84 !important;
+}
+div.stButton > button[kind="primaryFormSubmit"],
+div.stButton > button[data-testid="baseButton-primary"] {
+    background: linear-gradient(135deg, #1e4d2b, #2d7a45) !important;
+    color: #3ddc84 !important;
+    border: 1px solid #3ddc84 !important;
+    font-weight: 700 !important;
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -193,45 +201,7 @@ div.stButton > button:hover {
 </style>
 """, unsafe_allow_html=True)
 
-# ── Floating hamburger button (works on Streamlit Cloud) ──
-st.markdown("""
-<script>
-(function() {
-    function injectHamburger() {
-        // Remove existing if any
-        var existing = document.getElementById('custom-hamburger');
-        if (existing) existing.remove();
-
-        var sidebar = document.querySelector('[data-testid="stSidebar"]');
-        var isCollapsed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false' ||
-                          getComputedStyle(sidebar).transform.includes('matrix') ||
-                          sidebar.style.display === 'none' ||
-                          (sidebar.getBoundingClientRect().width < 50);
-
-        if (isCollapsed) {
-            var btn = document.createElement('div');
-            btn.id = 'custom-hamburger';
-            btn.innerHTML = '<div style="width:22px;height:2px;background:#3ddc84;border-radius:2px;margin:5px 0;"></div><div style="width:22px;height:2px;background:#3ddc84;border-radius:2px;margin:5px 0;"></div><div style="width:22px;height:2px;background:#3ddc84;border-radius:2px;margin:5px 0;"></div>';
-            btn.style.cssText = 'position:fixed;top:14px;left:14px;width:46px;height:46px;background:#162019;border:1.5px solid #3ddc84;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;z-index:9999999;box-shadow:0 4px 20px rgba(0,0,0,0.6);transition:background 0.2s;';
-            btn.onmouseover = function(){ this.style.background='#1e4d2b'; };
-            btn.onmouseout  = function(){ this.style.background='#162019'; };
-            btn.onclick = function() {
-                // Click Streamlit's own collapsed control button
-                var toggle = document.querySelector('[data-testid="collapsedControl"] button') ||
-                             document.querySelector('[data-testid="collapsedControl"]');
-                if (toggle) { toggle.click(); }
-                setTimeout(injectHamburger, 400);
-            };
-            document.body.appendChild(btn);
-        }
-    }
-
-    // Run on load and watch for sidebar state changes
-    setTimeout(injectHamburger, 800);
-    setInterval(injectHamburger, 1000);
-})();
-</script>
-""", unsafe_allow_html=True)
+# Navigation handled by top navbar buttons
 
 # ─────────────────────────────────────────
 #  CONSTANTS
@@ -378,39 +348,43 @@ model, label_encoder, model_accuracy = train_model(df)
 # ─────────────────────────────────────────
 #  SIDEBAR
 # ─────────────────────────────────────────
-with st.sidebar:
-    st.markdown("""
-    <div style='padding:1rem 0 1.5rem 0;'>
-        <div style='font-family:'Segoe UI',system-ui,sans-serif;font-size:1.5rem;font-weight:800;color:#3ddc84;'>AirSense</div>
-        <div style='font-size:0.72rem;color:#7a9e88;letter-spacing:0.1em;text-transform:uppercase;'>India · 2015–2020</div>
-    </div>
-    <div style='height:1px;background:#1e3025;margin-bottom:1.2rem;'></div>
-    """, unsafe_allow_html=True)
+# ── Session state for page ──
+if 'page' not in st.session_state:
+    st.session_state.page = "🏠  Dashboard"
 
-    page = st.radio(
-        "nav",
-        ["🏠  Dashboard", "🗺️  India Map", "🏙️  City Analysis", "🤖  AQI Prediction", "🌿  Plant Solutions"],
-        label_visibility="collapsed"
-    )
+# ── Top fixed navbar ──
+st.markdown("""
+<div style='position:fixed;top:0;left:0;right:0;height:54px;
+            background:#0f1a12;border-bottom:1px solid #1e3025;
+            display:flex;align-items:center;padding:0 2rem;
+            z-index:99999;gap:0.5rem;box-shadow:0 2px 20px rgba(0,0,0,0.5);'>
+    <div style='font-family:"Segoe UI",system-ui,sans-serif;font-size:1.1rem;
+                font-weight:800;color:#3ddc84;margin-right:1.5rem;white-space:nowrap;'>
+        🌿 AirSense
+    </div>
+</div>
+<div style='height:54px;'></div>
+""", unsafe_allow_html=True)
 
-    st.markdown("""
-    <div style='height:1px;background:#1e3025;margin:1.5rem 0;'></div>
-    <div style='font-size:0.72rem;color:#7a9e88;line-height:1.8;'>
-        <div style='font-weight:600;color:#3ddc84;margin-bottom:0.4rem;'>AQI Scale</div>
-        <div>🟢 Good &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0–50</div>
-        <div>🔵 Satisfactory &nbsp; 51–100</div>
-        <div>🟡 Moderate &nbsp;&nbsp;&nbsp;&nbsp; 101–200</div>
-        <div>🟠 Poor &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 201–300</div>
-        <div>🔴 Very Poor &nbsp;&nbsp;&nbsp; 301–400</div>
-        <div>⛔ Severe &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 400+</div>
-    </div>
-    <div style='height:1px;background:#1e3025;margin:1.5rem 0;'></div>
-    <div style='font-size:0.72rem;color:#7a9e88;'>
-        <b style='color:#3ddc84;'>Dataset</b><br>
-        26 cities · 6 years<br>
-        {n:,} records · 18 features
-    </div>
-    """.format(n=len(df)), unsafe_allow_html=True)
+# ── Nav buttons ──
+pages = ["🏠  Dashboard", "🗺️  India Map", "🏙️  City Analysis", "🤖  AQI Prediction", "🌿  Plant Solutions"]
+cols = st.columns(len(pages))
+for i, p in enumerate(pages):
+    with cols[i]:
+        active = st.session_state.page == p
+        if st.button(
+            p,
+            key=f"nav_{i}",
+            type="primary" if active else "secondary",
+            use_container_width=True
+        ):
+            st.session_state.page = p
+            st.rerun()
+
+page = st.session_state.page
+
+st.markdown("<div style='height:0.5rem;'></div>", unsafe_allow_html=True)
+
 
 
 # ═══════════════════════════════════════════════════
