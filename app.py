@@ -26,7 +26,7 @@ st.set_page_config(
 # ─────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+/* Google Fonts removed for cloud compatibility */
 
 :root {
     --bg:      #0a0f0d;
@@ -42,29 +42,37 @@ st.markdown("""
 html, body, .stApp {
     background-color: var(--bg) !important;
     color: var(--text) !important;
-    font-family: 'DM Sans', sans-serif !important;
+    font-family: -apple-system, 'Segoe UI', sans-serif !important;
 }
 
 #MainMenu, footer { visibility: hidden; }
 header { visibility: hidden; }
 
-/* Always show the sidebar collapse/expand toggle arrow */
-[data-testid="collapsedControl"] {
+/* Always show sidebar toggle - cloud compatible */
+[data-testid="collapsedControl"],
+button[kind="header"] {
     visibility: visible !important;
     display: flex !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
     background: #162019 !important;
-    border: 1px solid #1e3025 !important;
+    border: 1px solid #2d5c3a !important;
     border-radius: 0 10px 10px 0 !important;
-    color: #3ddc84 !important;
-    top: 1rem !important;
-    box-shadow: 2px 0 12px rgba(0,0,0,0.4) !important;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.5) !important;
+    z-index: 999999 !important;
+}
+[data-testid="collapsedControl"] svg path,
+[data-testid="collapsedControl"] svg {
+    fill: #3ddc84 !important;
+    stroke: #3ddc84 !important;
 }
 [data-testid="collapsedControl"]:hover {
     background: #1e4d2b !important;
     border-color: #3ddc84 !important;
 }
-[data-testid="collapsedControl"] svg {
-    fill: #3ddc84 !important;
+section[data-testid="stSidebarCollapsedControl"] {
+    visibility: visible !important;
+    display: block !important;
 }
 .block-container { padding: 1.5rem 2rem 3rem 2rem !important; max-width: 1400px; }
 
@@ -101,7 +109,7 @@ header { visibility: hidden; }
     margin-bottom: 0.5rem;
 }
 .metric-value {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     font-size: 2rem;
     font-weight: 700;
     color: var(--accent);
@@ -110,7 +118,7 @@ header { visibility: hidden; }
 .metric-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
 
 .section-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--text);
@@ -136,7 +144,7 @@ header { visibility: hidden; }
     pointer-events: none;
 }
 .hero-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     font-size: 1.9rem;
     font-weight: 800;
     color: var(--text);
@@ -154,7 +162,7 @@ header { visibility: hidden; }
 }
 .plant-card:hover { border-color: var(--accent); transform: translateX(4px); }
 .plant-name {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     font-size: 1.05rem;
     font-weight: 700;
     color: var(--accent);
@@ -182,14 +190,14 @@ header { visibility: hidden; }
     padding: 1rem 1.2rem !important;
 }
 [data-testid="stMetricLabel"] { color: var(--muted) !important; font-size: 0.8rem !important; }
-[data-testid="stMetricValue"] { color: var(--accent) !important; font-family: 'Syne', sans-serif !important; }
+[data-testid="stMetricValue"] { color: var(--accent) !important; font-family: 'Segoe UI', system-ui, sans-serif !important; }
 
 div.stButton > button {
     background: linear-gradient(135deg, #1e4d2b, #2d7a45) !important;
     color: var(--accent) !important;
     border: 1px solid var(--accent) !important;
     border-radius: 10px !important;
-    font-family: 'Syne', sans-serif !important;
+    font-family: 'Segoe UI', system-ui, sans-serif !important;
     font-weight: 600 !important;
     letter-spacing: 0.05em !important;
     padding: 0.6rem 1.5rem !important;
@@ -287,8 +295,8 @@ PLANT_DATA = {
 PLOTLY_LAYOUT = dict(
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(22,32,25,0.6)',
-    font=dict(family='DM Sans', color='#7a9e88', size=12),
-    title_font=dict(family='Syne', color='#e8f5ee', size=15),
+    font=dict(family='system-ui, -apple-system, sans-serif', color='#7a9e88', size=12),
+    title_font=dict(family='Segoe UI, system-ui, sans-serif', color='#e8f5ee', size=15),
     xaxis=dict(gridcolor='#1e3025', linecolor='#1e3025', tickfont=dict(color='#7a9e88')),
     yaxis=dict(gridcolor='#1e3025', linecolor='#1e3025', tickfont=dict(color='#7a9e88')),
     legend=dict(bgcolor='rgba(0,0,0,0)', font=dict(color='#7a9e88')),
@@ -354,7 +362,7 @@ model, label_encoder, model_accuracy = train_model(df)
 with st.sidebar:
     st.markdown("""
     <div style='padding:1rem 0 1.5rem 0;'>
-        <div style='font-family:Syne,sans-serif;font-size:1.5rem;font-weight:800;color:#3ddc84;'>AirSense</div>
+        <div style='font-family:'Segoe UI',system-ui,sans-serif;font-size:1.5rem;font-weight:800;color:#3ddc84;'>AirSense</div>
         <div style='font-size:0.72rem;color:#7a9e88;letter-spacing:0.1em;text-transform:uppercase;'>India · 2015–2020</div>
     </div>
     <div style='height:1px;background:#1e3025;margin-bottom:1.2rem;'></div>
@@ -458,7 +466,7 @@ if page == "🏠  Dashboard":
         ))
         fig2.update_layout(**PLOTLY_LAYOUT, height=300,
                            annotations=[dict(text='All Cities', x=0.5, y=0.5, showarrow=False,
-                                             font=dict(family='Syne', size=12, color='#e8f5ee'))])
+                                             font=dict(family='Segoe UI, system-ui, sans-serif', size=12, color='#e8f5ee'))])
         st.plotly_chart(fig2, use_container_width=True)
 
     # Top 10 cities
@@ -613,8 +621,8 @@ elif page == "🏙️  City Analysis":
     ))
     fig_radar.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(family='DM Sans', color='#7a9e88'),
-        title_font=dict(family='Syne', color='#e8f5ee'),
+        font=dict(family='system-ui, -apple-system, sans-serif', color='#7a9e88'),
+        title_font=dict(family='Segoe UI, system-ui, sans-serif', color='#e8f5ee'),
         polar=dict(
             bgcolor='rgba(22,32,25,0.4)',
             radialaxis=dict(visible=True, gridcolor='#1e3025', tickfont=dict(color='#7a9e88', size=9)),
@@ -787,8 +795,8 @@ elif page == "🌿  Plant Solutions":
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=value,
-            title={'text': title, 'font': {'family': 'Syne', 'color': '#e8f5ee', 'size': 13}},
-            number={'font': {'family': 'Syne', 'color': color, 'size': 34}},
+            title={'text': title, 'font': {'family': 'Segoe UI, system-ui, sans-serif', 'color': '#e8f5ee', 'size': 13}},
+            number={'font': {'family': 'Segoe UI, system-ui, sans-serif', 'color': color, 'size': 34}},
             gauge={
                 'axis': {'range': [0, 500], 'tickcolor': '#7a9e88', 'tickfont': {'color': '#7a9e88', 'size': 9}},
                 'bar': {'color': color},
@@ -806,7 +814,7 @@ elif page == "🌿  Plant Solutions":
             }
         ))
         fig.update_layout(paper_bgcolor='rgba(0,0,0,0)',
-                          font=dict(family='DM Sans', color='#7a9e88'),
+                          font=dict(family='system-ui, -apple-system, sans-serif', color='#7a9e88'),
                           margin=dict(l=30,r=30,t=50,b=10), height=280)
         return fig
 
@@ -981,7 +989,7 @@ elif page == "🗺️  India Map":
             ),
             text=subset['City'],
             textposition='top center',
-            textfont=dict(family='DM Sans', size=10, color='#e8f5ee'),
+            textfont=dict(family='system-ui, -apple-system, sans-serif', size=10, color='#e8f5ee'),
             customdata=subset[['avg_aqi','max_aqi','pct_severe','records','dom_bucket']].values,
             hovertemplate=(
                 '<b>%{text}</b><br>'
@@ -999,29 +1007,29 @@ elif page == "🗺️  India Map":
         plot_bgcolor='rgba(0,0,0,0)',
         geo=dict(
             scope='asia',
+            projection_type='mercator',
             center=dict(lat=22, lon=80),
-            projection_scale=4.8,
-            bgcolor='rgba(10,15,13,0)',
-            showland=True,     landcolor='#111a15',
-            showocean=True,    oceancolor='#0a0f0d',
-            showlakes=True,    lakecolor='#0d1f18',
-            showrivers=True,   rivercolor='#1e3025',
-            showcountries=True,countrycolor='#2d5c3a',
-            showcoastlines=True, coastlinecolor='#2d5c3a',
-            showsubunits=True, subunitcolor='#1e3025',
-            subunitwidth=0.5,
             lonaxis=dict(range=[67, 98]),
-            lataxis=dict(range=[6, 37]),
+            lataxis=dict(range=[6, 38]),
+            bgcolor='rgba(10,15,13,0)',
+            showland=True,      landcolor='#111a15',
+            showocean=True,     oceancolor='#0a0f0d',
+            showlakes=True,     lakecolor='#0d1f18',
+            showrivers=True,    rivercolor='#1e3025',
+            showcountries=True, countrycolor='#2d5c3a',
+            showcoastlines=True,coastlinecolor='#2d5c3a',
+            showsubunits=True,  subunitcolor='#1e3025',
+            subunitwidth=0.5,
         ),
         legend=dict(
-            title=dict(text='AQI Category', font=dict(color='#e8f5ee', family='Syne', size=12)),
+            title=dict(text='AQI Category', font=dict(color='#e8f5ee', family='Segoe UI, system-ui, sans-serif', size=12)),
             bgcolor='rgba(17,26,21,0.9)',
             bordercolor='#1e3025',
             borderwidth=1,
-            font=dict(color='#7a9e88', family='DM Sans', size=11),
+            font=dict(color='#7a9e88', family='system-ui, -apple-system, sans-serif', size=11),
             x=0.01, y=0.98,
         ),
-        font=dict(family='DM Sans', color='#7a9e88'),
+        font=dict(family='system-ui, -apple-system, sans-serif', color='#7a9e88'),
         margin=dict(l=0, r=0, t=10, b=0),
         height=620,
     )
@@ -1050,7 +1058,7 @@ elif page == "🗺️  India Map":
             "<div style='display:flex;align-items:center;gap:1rem;padding:0.6rem 1rem;"
             "border-bottom:1px solid #1e3025;'>"
             f"<div style='font-family:Syne;font-size:0.85rem;font-weight:700;color:#7a9e88;width:28px;text-align:right;'>#{rank_num}</div>"
-            f"<div style='font-family:DM Sans;font-size:0.92rem;color:#e8f5ee;width:180px;'>{city_name}</div>"
+            f"<div style='font-family:-apple-system,'Segoe UI',sans-serif;font-size:0.92rem;color:#e8f5ee;width:180px;'>{city_name}</div>"
             f"<div style='flex:1;background:#1e3025;border-radius:4px;height:8px;overflow:hidden;'>"
             f"<div style='width:{bar_w}%;height:100%;background:{c};border-radius:4px;'></div></div>"
             f"<div style='font-family:Syne;font-size:0.95rem;font-weight:700;color:{c};width:60px;text-align:right;'>{avg_aqi}</div>"
