@@ -47,44 +47,12 @@ html, body, .stApp {
 
 #MainMenu, footer { visibility: hidden; }
 
-/* Hide header but keep toggle */
+/* Hide header and toolbar */
 header { visibility: hidden !important; }
 header [data-testid="stToolbar"] { visibility: hidden !important; }
 
-/* Hamburger button — always visible top-left */
-[data-testid="collapsedControl"] {
-    visibility: visible !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    position: fixed !important;
-    top: 14px !important;
-    left: 14px !important;
-    width: 44px !important;
-    height: 44px !important;
-    background: #162019 !important;
-    border: 1px solid #3ddc84 !important;
-    border-radius: 10px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
-    z-index: 999999 !important;
-    cursor: pointer !important;
-    transition: background 0.2s !important;
-}
-[data-testid="collapsedControl"]:hover {
-    background: #1e4d2b !important;
-}
-[data-testid="collapsedControl"] svg {
-    display: none !important;
-}
-[data-testid="collapsedControl"]::before {
-    content: '' !important;
-    display: block !important;
-    width: 20px !important;
-    height: 2px !important;
-    background: #3ddc84 !important;
-    box-shadow: 0 6px 0 #3ddc84, 0 12px 0 #3ddc84 !important;
-    border-radius: 2px !important;
-}
+/* Hide default collapsed control - we replace with JS button */
+[data-testid="collapsedControl"] { visibility: hidden !important; }
 .block-container { padding: 1.5rem 2rem 3rem 2rem !important; max-width: 1400px; }
 
 [data-testid="stSidebar"] {
@@ -223,6 +191,46 @@ div.stButton > button:hover {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 </style>
+""", unsafe_allow_html=True)
+
+# ── Floating hamburger button (works on Streamlit Cloud) ──
+st.markdown("""
+<script>
+(function() {
+    function injectHamburger() {
+        // Remove existing if any
+        var existing = document.getElementById('custom-hamburger');
+        if (existing) existing.remove();
+
+        var sidebar = document.querySelector('[data-testid="stSidebar"]');
+        var isCollapsed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false' ||
+                          getComputedStyle(sidebar).transform.includes('matrix') ||
+                          sidebar.style.display === 'none' ||
+                          (sidebar.getBoundingClientRect().width < 50);
+
+        if (isCollapsed) {
+            var btn = document.createElement('div');
+            btn.id = 'custom-hamburger';
+            btn.innerHTML = '<div style="width:22px;height:2px;background:#3ddc84;border-radius:2px;margin:5px 0;"></div><div style="width:22px;height:2px;background:#3ddc84;border-radius:2px;margin:5px 0;"></div><div style="width:22px;height:2px;background:#3ddc84;border-radius:2px;margin:5px 0;"></div>';
+            btn.style.cssText = 'position:fixed;top:14px;left:14px;width:46px;height:46px;background:#162019;border:1.5px solid #3ddc84;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;z-index:9999999;box-shadow:0 4px 20px rgba(0,0,0,0.6);transition:background 0.2s;';
+            btn.onmouseover = function(){ this.style.background='#1e4d2b'; };
+            btn.onmouseout  = function(){ this.style.background='#162019'; };
+            btn.onclick = function() {
+                // Click Streamlit's own collapsed control button
+                var toggle = document.querySelector('[data-testid="collapsedControl"] button') ||
+                             document.querySelector('[data-testid="collapsedControl"]');
+                if (toggle) { toggle.click(); }
+                setTimeout(injectHamburger, 400);
+            };
+            document.body.appendChild(btn);
+        }
+    }
+
+    // Run on load and watch for sidebar state changes
+    setTimeout(injectHamburger, 800);
+    setInterval(injectHamburger, 1000);
+})();
+</script>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────
