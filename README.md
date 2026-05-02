@@ -43,7 +43,7 @@ This generates `model.pkl` so the app loads instantly on every subsequent launch
 streamlit run app.py
 ```
 
-Open your browser at **http://localhost:8501**
+
 
 ---
 
